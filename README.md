@@ -22,7 +22,7 @@ Each patient record is expected to follow this structure:
   "ecg": np.ndarray of shape (T, 12), # ECG signal
   "labels": List[str]              #  list of condition labels
 }
-
+```
 ## Repository Structure
 pyhealth/
   tasks/
