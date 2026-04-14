@@ -37,3 +37,30 @@ examples/
 docs/
   ecg_task.md               # High-level documentation
   api/tasks/                # PyHealth-compatible .rst docs
+
+
+  ### Creating Environment
+
+  To create a virtual environment and install dependencies run the following in the main folder:
+  ```python
+python3 -m venv venv
+source venv/bin/activate
+pip install numpy pytest
+```
+### Running Tests
+To ensure reproducibility and run the test files:
+```python
+export PYTHONPATH=$(pwd)
+pytest tests/
+```
+Expected output:
+```python
+======================================== test session starts =========================================
+platform linux -- Python 3.8.10, pytest-8.3.5, pluggy-1.5.0
+rootdir: /<PATH TO REPO>/pyhealth_ecg_task_CS_598
+collected 3 items
+
+tests/test_ecg_task.py ...                                                                     [100%]
+
+========================================= 3 passed in 1.19s ==========================================
+```
