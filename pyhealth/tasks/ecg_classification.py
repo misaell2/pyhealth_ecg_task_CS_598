@@ -52,8 +52,9 @@ class ECGMultiLabelTask:
         """Convert labels into multi-hot encoding."""
         label_vector = np.zeros(len(self.labels), dtype=np.float32)
 
-        for i, label in enumerate(self.labels):
-            if label in patient_labels:
-                label_vector[i] = 1.0
+        for label in patient_labels:
+            if label in self.labels:
+                idx = self.labels.index(label)
+                label_vector[idx] = 1.0
 
         return label_vector

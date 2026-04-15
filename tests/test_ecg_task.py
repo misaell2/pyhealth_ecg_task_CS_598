@@ -63,7 +63,8 @@ def test_empty_patient():
 
 
 def test_no_labels():
-    """Test behavior when patient has no labels.
+    """
+    Test behavior when patient has no labels.
 
     This test verifies that:
     - A patient with valid ECG data but no labels still produces a sample
@@ -83,3 +84,24 @@ def test_no_labels():
     samples = task(patient)
 
     assert np.all(samples[0]["y"] == 0)
+    
+def test_different_label_sets():
+    """
+    Test task behavior under different label configurations.
+    """
+    label_sets = [
+        ["AF", "RBBB"],
+        ["AF", "I-AVB", "RBBB"],
+        ["AF", "I-AVB", "LBBB", "RBBB"],
+    ]
+
+    patient = {
+        "ecg": np.random.rand(100, 12),
+        "labels": ["AF", "RBBB"]
+    }
+
+    for labels in label_sets:
+        task = ECGMultiLabelTask(labels=labels)
+        samples = task(patient)
+
+        assert samples[0]["y"].shape == (len(labels),)
