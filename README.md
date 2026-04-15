@@ -7,13 +7,37 @@ This project implements a standalone ECG multi-label classification task for PyH
 "In-depth Benchmarking of Deep Neural Network Architectures for ECG Diagnosis"  
 https://proceedings.mlr.press/v149/nonaka21a.html
 
+---
 ## Task Description
-The task processes 12-lead ECG signals and predicts multiple cardiac conditions:
+The task processes 12-lead ECG signals and predicts multiple cardiac conditions simultaneously:
 
-- Atrial Fibrillation (AF)
-- First-degree AV Block (I-AVB)
-- Left Bundle Branch Block (LBBB)
-- Right Bundle Branch Block (RBBB)
+- Atrial Fibrillation (**AF**)
+- First-degree AV Block (**I-AVB**)
+- Left Bundle Branch Block (**LBBB**)
+- Right Bundle Branch Block (**RBBB**)
+---
+## Ablation Study
+
+In this repository, we perform an ablation study along two key dimensions:
+
+### 1. **Input Configuration (ECG Length)**
+   We vary the number of timesteps in the ECG signal (e.g., 50, 100, 200) to observe how input size affects the processed representation. This corresponds to a *data-level* or preprocessing variation.
+
+### 2. **Task Configuration (Label Set)**
+   We vary the set of diagnostic labels used for classification (e.g., 2-label vs 4-label setups). This changes the dimensionality and complexity of the output space, effectively altering the learning problem itself. This corresponds to a *problem-level* variation.
+   
+---
+
+### Comparison to Nonaka & Seita's paper (2021)
+While the original paper evaluates performance across different models for a fixed task, our work in this repository explores how changes in the task definition itself, particularly the label space, impacts the structure of the input-output mapping.
+Varying the label set is especially significant because it directly affects:
+- the number of prediction targets
+- the complexity of the classification problem
+- the structure of the model output
+
+  We provide a complementary perspective to Nonaka's work, highlighting that not only model choice, but also **task design**, plays an important role in ECG-based machine learning workflows. Below we explain the workflow:
+
+---
 
 ### Input Format
 Each patient record is expected to follow this structure:
@@ -23,20 +47,7 @@ Each patient record is expected to follow this structure:
   "labels": List[str]              #  list of condition labels
 }
 ```
-## Repository Structure
-pyhealth/
-  tasks/
-    ecg_classification.py   # Task implementation
 
-tests/
-  test_ecg_task.py          # Unit tests using synthetic data
-
-examples/
-  ecg_multilabel_resnet.py  # Example usage + ablation study
-
-docs/
-  ecg_task.md               # High-level documentation
-  api/tasks/                # PyHealth-compatible .rst docs
 
 
   ### Creating Environment
