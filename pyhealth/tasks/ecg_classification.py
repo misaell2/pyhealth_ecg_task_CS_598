@@ -1,27 +1,28 @@
 from typing import Dict, List, Any
 import numpy as np
 
+# Import BaseTask from PyHealth
+from pyhealth.tasks.base_task import BaseTask
 
-class ECGMultiLabelTask:
-    """
-    ECG Multi-label classification task.
+
+class ECGMultiLabelTask(BaseTask):
+    """ECG Multi-label classification task.
 
     This task converts ECG signals into samples suitable for
     multi-label classification problems.
     """
 
     def __init__(self, labels: List[str]):
-        """
-        Initialize the task.
+        """Initialize the task.
 
         Args:
             labels (List[str]): List of possible labels.
         """
+        super().__init__()
         self.labels = labels
 
     def __call__(self, patient: Dict[str, Any]) -> List[Dict[str, Any]]:
-        """
-        Process a patient record into model-ready samples.
+        """Process a patient record into model-ready samples.
 
         Args:
             patient (Dict[str, Any]): Patient data containing:

@@ -7,7 +7,9 @@ edge cases such as missing data or empty labels.
 
 All tests use synthetic data
 """
-
+import sys
+import os
+sys.path.insert(0, os.getcwd())
 import numpy as np
 from pyhealth.tasks.ecg_classification import ECGMultiLabelTask
 
