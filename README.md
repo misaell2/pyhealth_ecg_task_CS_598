@@ -69,7 +69,7 @@ Expected output:
 ======================================== test session starts =========================================
 platform linux -- Python 3.8.10, pytest-8.3.5, pluggy-1.5.0
 rootdir: /<PATH TO REPO>/pyhealth_ecg_task_CS_598
-collected 3 items
+collected 7 items
 
 tests/test_ecg_task.py ...                                                                     [100%]
 
@@ -78,10 +78,12 @@ tests/test_ecg_task.py ...                                                      
 
 
 
-## Example Usage (Manual Test Case)
+## Example Usage
+
+#basic manual test case
 
 ```python
-from tasks.ecg_classification import ECGMultiLabelTask
+from pyhealth.tasks.ecg_classification import ECGMultiLabelTask
 import numpy as np
 
 task = ECGMultiLabelTask(labels=["AF", "RBBB"])
@@ -93,3 +95,31 @@ patient = {
 
 samples = task(patient)
 print(samples)
+
+#Input Configuration (ECG Length) test case - processing signals of different lengths (50 vs 100 vs 200)
+```python
+from pyhealth.tasks.ecg_classification import ECGMultiLabelTask
+import numpy as np
+
+task = ECGMultiLabelTask(labels=["AF", "I-AVB", "LBBB", "RBBB"])
+
+patient_50 = {
+    "ecg": np.random.rand(50, 12),
+    "labels": ["AF"]
+}
+
+patient_100 = {
+    "ecg": np.random.rand(100, 12),
+    "labels": ["AF"]
+}
+
+patient_200 = {
+    "ecg": np.random.rand(200, 12),
+    "labels": ["AF"]
+}
+
+samples_50 = task(patient_50)
+samples_100 = task(patient_100)
+samples_200 = task(patient_200)
+print(samples_50, samples_100, samples_200)
+
