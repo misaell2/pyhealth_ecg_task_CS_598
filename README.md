@@ -76,7 +76,7 @@ collected 7 items
 
 tests/test_ecg_task.py ...                                                                     [100%]
 
-========================================= 4 passed in 1.19s ==========================================
+========================================= 7 passed in 1.19s ==========================================
 ```
 
 
@@ -99,6 +99,7 @@ patient = {
 
 samples = task(patient)
 print(samples)
+```
 
 #Input Configuration (ECG Length) test case - processing signals of different lengths (50 vs 100 vs 200)
 ```python
@@ -126,6 +127,7 @@ samples_50 = task(patient_50)
 samples_100 = task(patient_100)
 samples_200 = task(patient_200)
 print(samples_50, samples_100, samples_200)
+```
 
 #Task Configuration (Label Set) - comparing tasks with different number of labels (2 vs 4) at the same signal length of 100
 ```python
@@ -143,5 +145,5 @@ patient = {
 samples_simple = task_simple(patient)
 samples_complex = task_complex(patient)
 print(samples_simple, samples_complex)
-
+```
 
