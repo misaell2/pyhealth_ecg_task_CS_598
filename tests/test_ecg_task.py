@@ -11,8 +11,8 @@ import sys
 import os
 sys.path.insert(0, os.getcwd())
 import numpy as np
+import pytest #for parameterization
 from pyhealth.tasks.ecg_classification import ECGMultiLabelTask
-
 
 def test_ecg_task_basic():
     """
@@ -39,6 +39,37 @@ def test_ecg_task_basic():
 
     assert len(samples) == 1
     assert samples[0]["x"].shape == (100, 12)
+    assert samples[0]["y"].shape == (4,)
+    assert samples[0]["y"][0] == 1  # AF
+    assert samples[0]["y"][3] == 1  # RBBB
+
+
+@pytest.mark.parametrize("timesteps", [50, 100, 200])
+def test_ecg_task_comprehensive(timesteps):
+    """
+    Test basic functionality of ECGMultiLabelTask across multiple signal lengths.
+
+    This test verifies that:
+    - A valid patient record produces exactly one sample regardless of signal length
+    - The ECG signal shape is maintained across different timestamps
+    - The label vector (y) has the correct shape
+    - Labels are correctly encoded into a multi-hot vector
+
+    Expected behavior:
+        - Input ECG shape is preserved through different signal lengths
+        - Output sample matches the input
+    """
+    task = ECGMultiLabelTask(labels=["AF", "I-AVB", "LBBB", "RBBB"])
+
+    patient = {
+        "ecg": np.random.rand(timesteps, 12),  # synthetic ECG signal
+        "labels": ["AF", "RBBB"]         # two active labels
+    }
+
+    samples = task(patient)
+
+    assert len(samples) == 1
+    assert samples[0]["x"].shape == (timesteps, 12)
     assert samples[0]["y"].shape == (4,)
     assert samples[0]["y"][0] == 1  # AF
     assert samples[0]["y"][3] == 1  # RBBB
