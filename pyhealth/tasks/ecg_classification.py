@@ -21,7 +21,7 @@ class ECGMultiLabelTask(BaseTask):
         super().__init__()
         self.labels = labels
         self.input_schema = {"ecg": ["float", "matrix"]}
-        selt.output_schema = {label": ["binary", "vector"]}
+        self.output_schema = {"label": ["binary", "vector"]}
 
     def __call__(self, patient: Dict[str, Any]) -> List[Dict[str, Any]]:
         """Process a patient record into model-ready samples.
