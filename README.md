@@ -123,3 +123,21 @@ samples_100 = task(patient_100)
 samples_200 = task(patient_200)
 print(samples_50, samples_100, samples_200)
 
+#Task Configuration (Label Set) - comparing tasks with different number of labels (2 vs 4) at the same signal length of 100
+```python
+from pyhealth.tasks.ecg_classification import ECGMultiLabelTask
+import numpy as np
+
+task_simple = ECGMultiLabelTask(labels=["AF", "LBBB"])
+task_complex = ECGMultiLabelTask(labels=["AF", "I-AVB", "LBBB", "RBBB"])
+
+patient = {
+    "ecg": np.random.rand(100, 12),
+    "labels": ["AF"]
+}
+
+samples_simple = task_simple(patient)
+samples_complex = task_complex(patient)
+print(samples_simple, samples_complex)
+
+
