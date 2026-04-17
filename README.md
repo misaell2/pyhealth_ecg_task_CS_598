@@ -15,6 +15,9 @@ The task processes 12-lead ECG signals and predicts multiple cardiac conditions 
 - First-degree AV Block (**I-AVB**)
 - Left Bundle Branch Block (**LBBB**)
 - Right Bundle Branch Block (**RBBB**)
+
+Utilizing PyHealth's BaseTask framework we are able to utilize many of it's features created for a wide range of medical data. However, becasue the paper we are trying to implement is specific to ECG we modified BaseTask by implementing a specific __call__ logic and schema that will enable PyHealth's learning pipelines to understand the 12-lead ECG singnals as matrices.
+
 ---
 ## Ablation Study
 
@@ -79,6 +82,7 @@ tests/test_ecg_task.py ...                                                      
 
 
 ## Example Usage
+For all example test cases,we import our created class ECGMultiLabelTask which inherits directly from PyHealth's BaseTask, however we did modify it to handle ECG specific data.
 
 #basic manual test case
 
