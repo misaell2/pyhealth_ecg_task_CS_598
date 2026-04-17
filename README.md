@@ -56,7 +56,7 @@ Each patient record is expected to follow this structure:
   ```python
 python3 -m venv venv
 source venv/bin/activate
-pip install numpy pytest
+pip install numpy pytest polars
 ```
 ### Running Tests
 To ensure reproducibility and run the test files:
