@@ -75,3 +75,21 @@ tests/test_ecg_task.py ...                                                      
 
 ========================================= 4 passed in 1.19s ==========================================
 ```
+
+
+
+## Example Usage (Manual Test Case)
+
+```python
+from tasks.ecg_classification import ECGMultiLabelTask
+import numpy as np
+
+task = ECGMultiLabelTask(labels=["AF", "RBBB"])
+
+patient = {
+    "ecg": np.random.rand(100, 12),
+    "labels": ["AF"]
+}
+
+samples = task(patient)
+print(samples)
