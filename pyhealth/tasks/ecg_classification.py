@@ -1,3 +1,31 @@
+"""
+This task was implemented for the CS598DLH SP26 Final Project
+
+Authored by Jonathan Gong, Misael Lazaro, and Sydney Robeson
+NetIDs: jgong11, misaell2, sel9
+
+This task is inspired by Nonaka & Seita (2021)
+"In-depth Benchmarking of Deep Neural Network Architectures for ECG Diagnosis"
+Paper link: https://proceedings.mlr.press/v149/nonaka21a.html
+
+ECGMultiLabelCardiologyTask is a standalone PyHealth task for multi-label ECG
+classification. It is designed to operate on CardiologyDataset-style records
+that reference paired PhysioNet-format waveform (.mat) and header (.hea) files.
+
+For each visit record, the task:
+1. Loads a 12-lead ECG signal from the waveform file.
+2. Parses diagnosis codes and basic demographics (sex and age) from the
+   corresponding header file.
+3. Converts the configured diagnosis label set into a multi-hot target vector.
+4. Segments the ECG into fixed-length sliding windows using the specified epoch
+   length, shift, and sampling rate.
+5. Produces model-ready samples containing the signal window, multilabel target,
+   and associated visit/patient metadata.
+
+This makes the task suitable for training and testing existing PyHealth models
+on synthetic or dataset-backed ECG classification workflows.
+"""
+
 from typing import Dict, List, Any, Optional, Union
 import os
 import numpy as np
