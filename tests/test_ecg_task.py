@@ -1,5 +1,5 @@
 """
-Unit tests for ECGMultiLabelTask.
+Unit tests for ECGMultiLabelCardiologyTask.
 
 These tests validate the functionality of the ECG multi-label classification
 task, ensuring correct input processing, label encoding, and handling of
@@ -12,11 +12,11 @@ import os
 sys.path.insert(0, os.getcwd())
 import numpy as np
 import pytest #for parameterization
-from pyhealth.tasks.ecg_classification import ECGMultiLabelTask
+from pyhealth.tasks.ecg_classification import ECGMultiLabelCardiologyTask
 
 def test_ecg_task_basic():
     """
-    Test basic functionality of ECGMultiLabelTask.
+    Test basic functionality of ECGMultiLabelCardiologyTask.
 
     This test verifies that:
     - A valid patient record produces exactly one sample
@@ -28,7 +28,7 @@ def test_ecg_task_basic():
         - Input ECG shape is preserved
         - Output label vector matches the provided labels
     """
-    task = ECGMultiLabelTask(labels=["AF", "I-AVB", "LBBB", "RBBB"])
+    task = ECGMultiLabelCardiologyTask(labels=["AF", "I-AVB", "LBBB", "RBBB"])
 
     patient = {
         "ecg": np.random.rand(100, 12),  # synthetic ECG signal
@@ -47,7 +47,7 @@ def test_ecg_task_basic():
 @pytest.mark.parametrize("timesteps", [50, 100, 200])
 def test_ecg_task_comprehensive(timesteps):
     """
-    Test basic functionality of ECGMultiLabelTask across multiple signal lengths.
+    Test basic functionality of ECGMultiLabelCardiologyTask across multiple signal lengths.
 
     This test verifies that:
     - A valid patient record produces exactly one sample regardless of signal length
@@ -87,7 +87,7 @@ def test_empty_patient():
     Expected behavior:
         - Output is an empty list
     """
-    task = ECGMultiLabelTask(labels=["AF"])
+    task = ECGMultiLabelCardiologyTask(labels=["AF"])
 
     patient = {}  # missing both "ecg" and "labels"
     samples = task(patient)
@@ -107,7 +107,7 @@ def test_no_labels():
         - Output sample exists
         - Label vector contains only zeros
     """
-    task = ECGMultiLabelTask(labels=["AF", "LBBB"])
+    task = ECGMultiLabelCardiologyTask(labels=["AF", "LBBB"])
 
     patient = {
         "ecg": np.random.rand(50, 12),  # shorter ECG signal
@@ -134,7 +134,7 @@ def test_different_label_sets():
     }
 
     for labels in label_sets:
-        task = ECGMultiLabelTask(labels=labels)
+        task = ECGMultiLabelCardiologyTask(labels=labels)
         samples = task(patient)
 
         assert samples[0]["y"].shape == (len(labels),)
