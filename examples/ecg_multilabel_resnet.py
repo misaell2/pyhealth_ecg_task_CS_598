@@ -70,9 +70,19 @@ def make_time_axis(length: int) -> np.ndarray:
 
 
 def synthesize_signal(dx_codes: Sequence[str], length: int) -> np.ndarray:
-    """
-    Create a synthetic 12-lead ECG-like signal of shape (leads, timesteps).
-    Each label injects a distinct pattern so the model has something learnable.
+    """Generate synthetic ECG signal with label-specific patterns.
+
+    Args:
+        dx_codes: List of diagnosis labels.
+        length: Number of timesteps.
+
+    Returns:
+        np.ndarray: ECG signal (leads, timesteps).
+
+    Example:
+        >>> signal = synthesize_signal(["AF"], 10000)
+        >>> signal.shape
+        (12, 10000)
     """
     t = make_time_axis(length)
     signal = 0.03 * np.random.randn(N_LEADS, length).astype(np.float32)
@@ -129,6 +139,22 @@ def write_record(
     age: int,
     sex: str,
 ) -> Dict[str, str]:
+   """Create synthetic ECG record files (.mat + .hea).
+
+    Args:
+        root: Directory path.
+        patient_id: Patient identifier.
+        record_name: Record name.
+        dx_codes: Diagnosis labels.
+        age: Patient age.
+        sex: Patient sex.
+
+    Returns:
+        Dict[str, str]: Visit record.
+
+    Example:
+        >>> visit = write_record(...)
+    """
     length = SAMPLING_RATE * DURATION_SEC
     signal = synthesize_signal(dx_codes=dx_codes, length=length)
 
@@ -178,6 +204,18 @@ def build_synthetic_visits(root: Path) -> List[Dict[str, str]]:
 
 
 def run_task(config: AblationConfig, visits: List[Dict[str, str]]) -> List[Dict]:
+   """Run ECG task on visit data.
+
+    Args:
+        config: Ablation configuration.
+        visits: List of visit dictionaries.
+
+    Returns:
+        List of processed samples.
+
+    Example:
+        >>> samples = run_task(cfg, visits)
+    """
     task = ECGMultiLabelCardiologyTask(
         labels=config.labels,
         epoch_sec=config.epoch_sec,
@@ -195,13 +233,17 @@ def adapt_samples_for_sampledataset(
     task_samples: List[Dict],
     all_labels: Sequence[str],
 ) -> List[Dict]:
-    """
-    Convert task outputs into raw samples for create_sample_dataset().
+    """Convert task outputs into PyHealth dataset format.
 
-    For the current MLP + tensor path in this repo, the safest representation is
-    a flat 1D numeric tensor per sample.
+    Args:
+        task_samples: Raw task outputs.
+        all_labels: Label list.
 
-    For multilabel output, the label should be a list of active label names.
+    Returns:
+        List of dataset-compatible samples.
+
+    Example:
+        >>> adapted = adapt_samples_for_sampledataset(samples, labels)
     """
     adapted: List[Dict] = []
 
@@ -336,6 +378,17 @@ def evaluate_multilabel_f1(model, loader) -> Dict[str, float]:
 
 
 def run_ablation(config: AblationConfig) -> Dict[str, float]:
+   """Run full training pipeline for one configuration.
+
+    Args:
+        config: Ablation settings.
+
+    Returns:
+        Dict of performance metrics.
+
+    Example:
+        >>> result = run_ablation(cfg)
+    """
     with tempfile.TemporaryDirectory() as tmpdir:
         root = Path(tmpdir)
         visits = build_synthetic_visits(root)
