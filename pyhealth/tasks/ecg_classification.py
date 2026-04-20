@@ -35,10 +35,22 @@ from pyhealth.tasks.base_task import BaseTask  # Import BaseTask from PyHealth
 
 
 class ECGMultiLabelCardiologyTask(BaseTask):
-    """ECG Multi-label classification task.
+    """PyHealth task for multi-label ECG classification.
 
-    This task converts ECG signals into samples suitable for
-    multi-label classification problems.
+    This task processes PhysioNet-style ECG records (.mat + .hea files) into
+    model-ready samples. It supports multi-label classification and flexible
+    signal segmentation.
+
+    Attributes:
+        labels (List[str]): List of possible diagnosis labels.
+        epoch_sec (int): Length of each ECG window in seconds.
+        shift (int): Sliding window shift in seconds.
+        sampling_rate (int): Sampling rate of ECG signals (Hz).
+
+    Example:
+        >>> task = ECGMultiLabelCardiologyTask(labels=["AF", "RBBB"])
+        >>> samples = task(visit_record)
+        >>> print(samples[0]["signal"].shape)
     """
     task_name: str = "ECGMultiLabelCardiologyTask"
     input_schema: Dict[str, str] = {"signal": "tensor"}
@@ -53,10 +65,20 @@ class ECGMultiLabelCardiologyTask(BaseTask):
         **kwargs,
     ):
 
-        """Initialize the task.
+         """Initialize the ECG task.
 
         Args:
-            labels (List[str]): List of possible labels.
+            labels (List[str]): List of possible diagnosis labels.
+            epoch_sec (int): Window size in seconds.
+            shift (int): Sliding window step in seconds.
+            sampling_rate (int): Signal sampling rate (Hz).
+
+        Example:
+            >>> task = ECGMultiLabelCardiologyTask(
+            ...     labels=["AF", "RBBB"],
+            ...     epoch_sec=10,
+            ...     shift=5
+            ... )
         """
         super().__init__(**kwargs)
         self.labels = labels
@@ -66,15 +88,18 @@ class ECGMultiLabelCardiologyTask(BaseTask):
         self.label_to_index = {label: idx for idx, label in enumerate(labels)}
 
     def __call__(self, patient: Union[List[Dict[str, Any]], Dict[str, Any]]) -> List[Dict[str, Any]]:
-        """Process a patient record into model-ready samples.
+        """Convert patient visits into model-ready samples.
 
         Args:
-            patient (Dict[str, Any]): Patient data containing:
-                - "ecg": ECG signal (T, 12)
-                - "labels": list of labels
+            patient: Either a single visit dictionary or list of visits.
 
         Returns:
-            List[Dict[str, Any]]: Processed samples
+            List[Dict[str, Any]]: Processed samples.
+
+        Example:
+            >>> samples = task(patient_record)
+            >>> len(samples)
+            12
         """
         visits = self._normalize_input(patient)
         samples = []
@@ -136,7 +161,18 @@ class ECGMultiLabelCardiologyTask(BaseTask):
         self,
         patient: Union[List[Dict[str, Any]], Dict[str, Any]],
     ) -> List[Dict[str, Any]]:
-        """Normalize input into a list of visit dicts."""
+        """Normalize input into list format.
+
+        Args:
+            patient: Single dict or list of dicts.
+
+        Returns:
+            List of visit dictionaries.
+
+        Example:
+            >>> self._normalize_input({"a": 1})
+            [{'a': 1}]
+        """
         if isinstance(patient, list):
             return patient
         if isinstance(patient, dict):
@@ -145,13 +181,34 @@ class ECGMultiLabelCardiologyTask(BaseTask):
 
 
     def _is_valid_visit(self, visit: Dict[str, Any]) -> bool:
-        """Checks whether the visit has the minimum required fields."""
+         """Check required keys exist.
+
+        Args:
+            visit: Visit dictionary.
+
+        Returns:
+            bool: True if valid.
+
+        Example:
+            >>> self._is_valid_visit({"patient_id": "p1"})
+            False
+        """
         required_keys = {"load_from_path", "patient_id", "signal_file", "label_file"}
         return required_keys.issubset(visit.keys())
 
 
     def _load_signal(self, signal_path: str) -> Optional[np.ndarray]:
-        """Load ECG signal from a .mat file."""
+        """Load ECG signal from .mat file.
+
+        Args:
+            signal_path: Path to ECG .mat file.
+
+        Returns:
+            np.ndarray or None
+
+        Example:
+            >>> signal = self._load_signal("rec1.mat")
+        """
         try:
             mat = loadmat(signal_path)
         except Exception:
@@ -166,7 +223,17 @@ class ECGMultiLabelCardiologyTask(BaseTask):
 
 
     def _parse_header_metadata(self, header_path: str) -> Dict[str, List[str]]:
-        """Parse #Dx, #Sex, and #Age from a PhysioNet-style .hea header."""
+        """Extract metadata from .hea file.
+
+        Args:
+            header_path: Path to header file.
+
+        Returns:
+            Dict containing dx_codes, sex, age.
+
+        Example:
+            >>> meta = self._parse_header_metadata("rec1.hea")
+        """
         dx_codes: List[str] = []
         sex: List[str] = []
         age: List[str] = []
@@ -198,7 +265,18 @@ class ECGMultiLabelCardiologyTask(BaseTask):
 
 
     def _encode_labels(self, patient_labels: List[str]) -> np.ndarray:
-        """Convert labels into multi-hot encoding."""
+        """Convert labels to multi-hot vector.
+
+        Args:
+            patient_labels: List of diagnosis labels.
+
+        Returns:
+            np.ndarray: Multi-hot encoded vector.
+
+        Example:
+            >>> self._encode_labels(["AF"])
+            array([1., 0., 0.])
+        """
         label_vector = np.zeros(len(self.labels), dtype=np.float32)
 
         for label in patient_labels:
