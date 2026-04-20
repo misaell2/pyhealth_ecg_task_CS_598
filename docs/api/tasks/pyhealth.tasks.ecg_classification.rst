@@ -1,21 +1,23 @@
-ECG Multi-Label Cardiology Task
-===============================
+pyhealth.tasks.ecg_classification
+=================================
 
-Overview
---------
+.. currentmodule:: pyhealth.tasks.ecg_classification
+
+ECG Multi-Label Cardiology Task
+-------------------------------
 
 This module provides an implementation of a multi-label ECG classification task
 for the PyHealth framework.
 
-The task processes 12-lead electrocardiogram (ECG) signals and predicts multiple
-cardiac conditions simultaneously. It extends the PyHealth ``BaseTask`` class and
-integrates with PyHealth datasets and models.
+The task processes 12-lead electrocardiogram (ECG) signals and predicts
+multiple cardiac conditions simultaneously. It extends the PyHealth
+``BaseTask`` class and integrates with PyHealth datasets and models.
 
 Key Features
 ------------
 
 - Multi-label classification support
-- PhysioNet-style ECG file handling (.mat and .hea)
+- PhysioNet-style ECG file handling (``.mat`` and ``.hea``)
 - Sliding window segmentation
 - Metadata extraction (age, sex, diagnosis codes)
 - Compatibility with PyHealth pipelines
@@ -25,7 +27,7 @@ Input Format
 
 Each patient visit is represented as a dictionary:
 
-::
+.. code-block:: python
 
     {
         "load_from_path": "...",
@@ -39,7 +41,7 @@ Output Format
 
 Each processed sample contains:
 
-::
+.. code-block:: python
 
     {
         "signal": numpy.ndarray,
@@ -64,13 +66,13 @@ Ablation Support
 
 This task enables experimentation across:
 
-- Label set variation (task-level)
-- Temporal segmentation (data-level)
+- Label set variation
+- Temporal segmentation
 
 Example
 -------
 
-::
+.. code-block:: python
 
     from pyhealth.tasks.ecg_classification import ECGMultiLabelCardiologyTask
 
@@ -87,6 +89,6 @@ Module Reference
 ----------------
 
 .. automodule:: pyhealth.tasks.ecg_classification
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
