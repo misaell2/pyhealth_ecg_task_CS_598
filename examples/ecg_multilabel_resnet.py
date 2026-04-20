@@ -97,7 +97,7 @@ def synthesize_signal(dx_codes: Sequence[str], length: int) -> np.ndarray:
         for lead in [5, 6]:
             signal[lead] += 0.45 * bump
 
-    if "I-AVG" in dx_codes:
+    if "I-AVB" in dx_codes:
         for lead in [7, 8]:
             signal[lead] += 0.25 * np.sin(2 * np.pi * 2 * t)
 
@@ -160,15 +160,15 @@ def build_synthetic_visits(root: Path) -> List[Dict[str, str]]:
         ("p01", "rec01", ["AF"], 63, "Male"),
         ("p02", "rec02", ["RBBB"], 57, "Female"),
         ("p03", "rec03", ["LBBB"], 74, "Male"),
-        ("p04", "rec04", ["I-AVG"], 69, "Female"),
+        ("p04", "rec04", ["I-AVB"], 69, "Female"),
         ("p05", "rec05", ["AF", "RBBB"], 61, "Male"),
         ("p06", "rec06", ["AF", "LBBB"], 72, "Female"),
         ("p07", "rec07", ["RBBB", "LBBB"], 58, "Male"),
-        ("p08", "rec08", ["AF", "I-AVG"], 65, "Female"),
-        ("p09", "rec09", ["RBBB", "I-AVG"], 60, "Male"),
-        ("p10", "rec10", ["LBBB", "I-AVG"], 55, "Female"),
+        ("p08", "rec08", ["AF", "I-AVB"], 65, "Female"),
+        ("p09", "rec09", ["RBBB", "I-AVB"], 60, "Male"),
+        ("p10", "rec10", ["LBBB", "I-AVB"], 55, "Female"),
         ("p11", "rec11", ["AF", "RBBB", "LBBB"], 71, "Male"),
-        ("p12", "rec12", ["AF", "RBBB", "I-AVG", "LBBB"], 67, "Female"),
+        ("p12", "rec12", ["AF", "RBBB", "I-AVB", "LBBB"], 67, "Female"),
     ]
 
     return [
@@ -434,19 +434,19 @@ def main() -> None:
         ),
         AblationConfig(
             name="labels4_epoch10_shift5",
-            labels=["AF", "RBBB", "I-AVG", "LBBB"],
+            labels=["AF", "RBBB", "I-AVB", "LBBB"],
             epoch_sec=10,
             shift=5,
         ),
         AblationConfig(
             name="labels4_epoch5_shift5",
-            labels=["AF", "RBBB", "I-AVG", "LBBB"],
+            labels=["AF", "RBBB", "I-AVB", "LBBB"],
             epoch_sec=5,
             shift=5,
         ),
         AblationConfig(
             name="labels4_epoch10_shift10",
-            labels=["AF", "RBBB", "I-AVG", "LBBB"],
+            labels=["AF", "RBBB", "I-AVB", "LBBB"],
             epoch_sec=10,
             shift=10,
         ),
