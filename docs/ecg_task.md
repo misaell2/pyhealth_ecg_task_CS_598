@@ -1,33 +1,31 @@
-# ECG Multi-Label Task Documentation
+# ECG Multi-Label Cardiology Task
 
 ## Overview
-The `ECGMultiLabelTask` is a standalone task implementation for converting
-raw ECG signals into model-ready samples for **multi-label classification**.
 
-This task is inspired by *Nonaka & Seita (2021)*, which studies deep learning
-approaches for ECG diagnosis across multiple datasets.
+This module implements a PyHealth-compatible task for ECG multi-label classification.
+
+The task processes 12-lead electrocardiogram (ECG) signals and predicts multiple cardiac conditions simultaneously. It extends PyHealth’s `BaseTask` interface and is designed to integrate seamlessly with PyHealth datasets and models.
 
 ---
 
-## Task Description
-This task processes **12-lead ECG signals** and maps them to a set of
-diagnostic labels. Each patient may have **multiple simultaneous conditions**,
-making this a multi-label classification problem.
+## Key Features
 
-### Supported Labels (example)
-- Atrial Fibrillation (**AF**)
-- First-degree Atrioventricular Block (**I-AVB**)
-- Left Bundle Branch Block (**LBBB**)
-- Right Bundle Branch Block (**RBBB**)
+- Supports **multi-label classification**
+- Handles **PhysioNet-style ECG data** (`.mat` + `.hea`)
+- Performs **sliding window segmentation**
+- Extracts metadata (age, sex, diagnosis codes)
+- Fully compatible with PyHealth pipelines
 
 ---
 
 ## Input Format
 
-Each patient record must be a dictionary with the following structure:
+Each patient visit must be represented as:
 
 ```python
 {
-  "ecg": np.ndarray of shape (T, 12),  # ECG signal (T timesteps, 12 leads)
-  "labels": List[str]                  # List of diagnostic labels
+  "load_from_path": "...",
+  "patient_id": "...",
+  "signal_file": "record.mat",
+  "label_file": "record.hea",
 }
