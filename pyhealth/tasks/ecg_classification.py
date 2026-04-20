@@ -102,8 +102,8 @@ class ECGMultiLabelCardiologyTask(BaseTask):
             12
         """
         # --- SIMPLE MODE (for unit tests) ---
-        if isinstance(patient, dict):
-            if "ecg" not in patient or "labels" not in patient:
+        if isinstance(patient, dict) and "ecg" in patient:
+            if "labels" not in patient:
                 return []
 
             ecg = patient["ecg"]
@@ -198,20 +198,52 @@ class ECGMultiLabelCardiologyTask(BaseTask):
 
 
     def _is_valid_visit(self, visit: Dict[str, Any]) -> bool:
-         """Check required keys exist.
-
-        Args:
-            visit: Visit dictionary.
-
-        Returns:
-            bool: True if valid.
-
-        Example:
-            >>> self._is_valid_visit({"patient_id": "p1"})
-            False
-        """
-        required_keys = {"load_from_path", "patient_id", "signal_file", "label_file"}
-        return required_keys.issubset(visit.keys())
+       """Validate that a visit dictionary contains the minimum required fields.
+   
+       This method checks whether the input `visit` dictionary includes the essential
+       keys needed to process an ECG record in dataset mode. It is used to filter out
+       malformed or incomplete visit entries before attempting to load signal and
+       metadata files.
+   
+       Required keys:
+           - "load_from_path": Root directory containing ECG files
+           - "signal_file": Filename of the ECG signal (.mat)
+           - "patient_id": Unique identifier for the patient
+   
+       Note:
+           The "label_file" key is intentionally not required, as some workflows
+           (e.g., synthetic tests or incomplete datasets) may omit header files.
+           In such cases, downstream logic handles missing labels gracefully.
+   
+       Args:
+           visit (Dict[str, Any]): A dictionary representing a single patient visit.
+               Expected to contain file references and identifiers.
+   
+       Returns:
+           bool: True if the visit contains all required keys, False otherwise.
+   
+       Example:
+           >>> visit = {
+           ...     "load_from_path": "/data/ecg",
+           ...     "patient_id": "patient_001",
+           ...     "signal_file": "record_001.mat",
+           ...     "label_file": "record_001.hea"
+           ... }
+           >>> self._is_valid_visit(visit)
+           True
+   
+           >>> invalid_visit = {
+           ...     "patient_id": "patient_002",
+           ...     "signal_file": "record_002.mat"
+           ... }
+           >>> self._is_valid_visit(invalid_visit)
+           False
+       """
+       return (
+           "load_from_path" in visit
+           and "signal_file" in visit
+           and "patient_id" in visit
+       )
 
 
     def _load_signal(self, signal_path: str) -> Optional[np.ndarray]:
