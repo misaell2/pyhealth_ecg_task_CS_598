@@ -65,7 +65,7 @@ class ECGMultiLabelCardiologyTask(BaseTask):
         **kwargs,
     ):
 
-         """Initialize the ECG task.
+        """Initialize the ECG task.
 
         Args:
             labels (List[str]): List of possible diagnosis labels.
@@ -198,31 +198,31 @@ class ECGMultiLabelCardiologyTask(BaseTask):
 
 
     def _is_valid_visit(self, visit: Dict[str, Any]) -> bool:
-       """Validate that a visit dictionary contains the minimum required fields.
-   
-       This method checks whether the input `visit` dictionary includes the essential
-       keys needed to process an ECG record in dataset mode. It is used to filter out
-       malformed or incomplete visit entries before attempting to load signal and
-       metadata files.
-   
-       Required keys:
+        """Validate that a visit dictionary contains the minimum required fields.
+
+        This method checks whether the input `visit` dictionary includes the essential
+        keys needed to process an ECG record in dataset mode. It is used to filter out
+        malformed or incomplete visit entries before attempting to load signal and
+        metadata files.
+
+        Required keys:
            - "load_from_path": Root directory containing ECG files
            - "signal_file": Filename of the ECG signal (.mat)
            - "patient_id": Unique identifier for the patient
-   
-       Note:
+
+        Note:
            The "label_file" key is intentionally not required, as some workflows
            (e.g., synthetic tests or incomplete datasets) may omit header files.
            In such cases, downstream logic handles missing labels gracefully.
-   
-       Args:
+
+        Args:
            visit (Dict[str, Any]): A dictionary representing a single patient visit.
                Expected to contain file references and identifiers.
-   
-       Returns:
+
+        Returns:
            bool: True if the visit contains all required keys, False otherwise.
-   
-       Example:
+
+        Example:
            >>> visit = {
            ...     "load_from_path": "/data/ecg",
            ...     "patient_id": "patient_001",
@@ -231,19 +231,19 @@ class ECGMultiLabelCardiologyTask(BaseTask):
            ... }
            >>> self._is_valid_visit(visit)
            True
-   
+
            >>> invalid_visit = {
            ...     "patient_id": "patient_002",
            ...     "signal_file": "record_002.mat"
            ... }
            >>> self._is_valid_visit(invalid_visit)
            False
-       """
-       return (
+        """
+        return (
            "load_from_path" in visit
            and "signal_file" in visit
            and "patient_id" in visit
-       )
+        )
 
 
     def _load_signal(self, signal_path: str) -> Optional[np.ndarray]:

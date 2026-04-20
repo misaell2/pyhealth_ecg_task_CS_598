@@ -139,7 +139,7 @@ def write_record(
     age: int,
     sex: str,
 ) -> Dict[str, str]:
-   """Create synthetic ECG record files (.mat + .hea).
+    """Create synthetic ECG record files (.mat + .hea).
 
     Args:
         root: Directory path.
@@ -204,7 +204,7 @@ def build_synthetic_visits(root: Path) -> List[Dict[str, str]]:
 
 
 def run_task(config: AblationConfig, visits: List[Dict[str, str]]) -> List[Dict]:
-   """Run ECG task on visit data.
+    """Run ECG task on visit data.
 
     Args:
         config: Ablation configuration.
@@ -378,7 +378,7 @@ def evaluate_multilabel_f1(model, loader) -> Dict[str, float]:
 
 
 def run_ablation(config: AblationConfig) -> Dict[str, float]:
-   """Run full training pipeline for one configuration.
+    """Run full training pipeline for one configuration.
 
     Args:
         config: Ablation settings.
