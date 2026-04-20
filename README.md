@@ -61,7 +61,7 @@ Each patient record is expected to follow this structure:
   ```python
 python3 -m venv venv
 source venv/bin/activate
-pip install numpy pytest polars scipy
+pip install numpy pytest polars scipy pandas torch mne
 ```
 ### Running Tests
 This repository includes two complementary test suites:
