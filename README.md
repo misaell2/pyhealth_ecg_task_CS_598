@@ -64,7 +64,36 @@ source venv/bin/activate
 pip install numpy pytest polars
 ```
 ### Running Tests
-To ensure reproducibility and run the test files:
+This repository includes two complementary test suites:
+
+### 1. Unit Tests 
+File: `tests/test_ecg_task.py`
+
+- Uses simple synthetic in-memory ECG arrays
+- Verifies:
+  - label encoding
+  - input/output shapes
+  - edge cases (missing data, empty labels)
+
+Run with:
+```bash
+pytest tests/test_ecg_task.py
+```
+
+### 2. Integration Tests 
+File: `tests/test_ecg_task_synthetic_dataset.py`
+Simulates realistic PhysioNet-style ECG data: .mat waveform files and .hea header files.
+- Verifies:
+  - sliding window segmentation
+  - metadata extraction (age, sex, Dx codes)
+  - Compatibility with PyHealth datasets and models
+  - End-to-end training pipelines
+Run with:
+```bash
+pytest tests/test_ecg_task_synthetic_dataset.py
+```
+
+It is also recommended to run both tests at the same time as follows:
 ```python
 export PYTHONPATH=$(pwd)
 pytest tests/
