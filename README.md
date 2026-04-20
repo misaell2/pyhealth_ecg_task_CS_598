@@ -16,7 +16,7 @@ The task processes 12-lead ECG signals and predicts multiple cardiac conditions 
 - Left Bundle Branch Block (**LBBB**)
 - Right Bundle Branch Block (**RBBB**)
 
-Utilizing PyHealth's BaseTask framework we are able to utilize many of it's features created for a wide range of medical data. However, becasue the paper we are trying to implement is specific to ECG we modified BaseTask by implementing a specific __call__ logic and schema that will enable PyHealth's learning pipelines to understand the 12-lead ECG singnals as matrices.
+Utilizing PyHealth's BaseTask framework we are able to utilize many of it's features created for a wide range of medical data. However, becasue the paper we are trying to implement is specific to ECG we extended PyHealth's BaseTask by implementing a specific __call__ logic and schema that will enable PyHealth's learning pipelines to understand the 12-lead ECG singnals as matrices.
 
 ---
 ## Ablation Study
@@ -46,8 +46,10 @@ Varying the label set is especially significant because it directly affects:
 Each patient record is expected to follow this structure:
 ```python
 {
-  "ecg": np.ndarray of shape (T, 12), # ECG signal
-  "labels": List[str]              #  list of condition labels
+  "load_from_path": "...",
+  "patient_id": "...",
+  "signal_file": "rec01.mat",
+  "label_file": "rec01.hea",
 }
 ```
 
@@ -82,15 +84,15 @@ tests/test_ecg_task.py ...                                                      
 
 
 ## Example Usage
-For all example test cases,we import our created class ECGMultiLabelTask which inherits directly from PyHealth's BaseTask, however we did modify it to handle ECG specific data.
+For all example test cases,we import our created class ECGMultiLabelCardiologyTask which inherits directly from PyHealth's BaseTask, however we did modify it to handle ECG specific data.
 
 #basic manual test case
 
 ```python
-from pyhealth.tasks.ecg_classification import ECGMultiLabelTask
+from pyhealth.tasks.ecg_classification import ECGMultiLabelCardiologyTask
 import numpy as np
 
-task = ECGMultiLabelTask(labels=["AF", "RBBB"])
+task = ECGMultiLabelCardiologyTask(labels=["AF", "RBBB"])
 
 patient = {
     "ecg": np.random.rand(100, 12),
@@ -103,10 +105,10 @@ print(samples)
 
 #Input Configuration (ECG Length) test case - processing signals of different lengths (50 vs 100 vs 200)
 ```python
-from pyhealth.tasks.ecg_classification import ECGMultiLabelTask
+from pyhealth.tasks.ecg_classification import ECGMultiLabelCardiologyTask
 import numpy as np
 
-task = ECGMultiLabelTask(labels=["AF", "I-AVB", "LBBB", "RBBB"])
+task = ECGMultiLabelCardiologyTask(labels=["AF", "I-AVB", "LBBB", "RBBB"])
 
 patient_50 = {
     "ecg": np.random.rand(50, 12),
@@ -131,11 +133,11 @@ print(samples_50, samples_100, samples_200)
 
 #Task Configuration (Label Set) - comparing tasks with different number of labels (2 vs 4) at the same signal length of 100
 ```python
-from pyhealth.tasks.ecg_classification import ECGMultiLabelTask
+from pyhealth.tasks.ecg_classification import ECGMultiLabelCardiologyTask
 import numpy as np
 
-task_simple = ECGMultiLabelTask(labels=["AF", "LBBB"])
-task_complex = ECGMultiLabelTask(labels=["AF", "I-AVB", "LBBB", "RBBB"])
+task_simple = ECGMultiLabelCardiologyTask(labels=["AF", "LBBB"])
+task_complex = ECGMultiLabelCardiologyTask(labels=["AF", "I-AVB", "LBBB", "RBBB"])
 
 patient = {
     "ecg": np.random.rand(100, 12),
